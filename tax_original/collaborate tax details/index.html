@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tax Information Help Portal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-panel">
+        <div class="brand-badge">T</div>
+        <div>
+          <h1>Tax Help Portal</h1>
+          <p>Employee onboarding guide</p>
+        </div>
+      </div>
+      <div class="search-panel">
+        <label for="searchInput" class="search-label">Search sections</label>
+        <div class="search-input-wrap">
+          <input type="search" id="searchInput" placeholder="Search 80C, 80D, 80GG..." />
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+      <nav class="section-list" id="sectionList"></nav>
+    </aside>
+
+    <main class="content-area">
+      <header class="content-header">
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle sidebar">☰</button>
+        <div>
+          <p class="eyebrow">Employee tax learning</p>
+          <h2 id="contentTitle">Welcome to your Tax Help Portal</h2>
+        </div>
+      </header>
+
+      <section class="content-card" id="contentCard">
+        <div class="status-banner" id="statusBanner">Easy onboarding content for your first steps.</div>
+        <div class="content-body" id="contentBody"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

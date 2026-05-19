@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collaborate – Employee Onboarding Portal</title>
+  <meta name="description" content="Your complete HR onboarding assistant. Access onboarding tutorials and tax-saving information all in one professional portal." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── NAVBAR ──────────────────────────────────────────── -->
+  <header class="navbar" id="navbar" role="banner">
+    <div class="nav-brand" id="nav-brand">
+      <div class="nav-logo" id="nav-logo" aria-hidden="true">CO</div>
+      <div class="nav-brand-text">
+        <span class="nav-title" id="nav-title">Collaborate</span>
+        <span class="nav-sub" id="nav-sub">Employee Onboarding Portal</span>
+      </div>
+    </div>
+
+    <nav class="nav-links" id="nav-links" aria-label="Primary navigation">
+      <button class="nav-btn nav-btn--ghost" id="btn-home" aria-label="Go to Home">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nav-btn nav-btn--ghost" id="btn-tutorial-nav" aria-label="Open Onboarding Tutorial">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Tutorial
+      </button>
+      <button class="nav-btn nav-btn--ghost" id="btn-tax-nav" aria-label="Open Tax Details">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Tax Guide
+      </button>
+      <button class="nav-btn nav-btn--primary" id="btn-help" aria-haspopup="true" aria-expanded="false" aria-controls="help-modal">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Help Me
+      </button>
+    </nav>
+
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open mobile menu" aria-haspopup="true">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ── HELP MODAL ─────────────────────────────────────── -->
+  <div class="modal-overlay" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-panel" id="modal-panel" role="document">
+      <div class="modal-header">
+        <div class="modal-icon" aria-hidden="true">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <h2 id="modal-title" class="modal-title">How Can We Help?</h2>
+          <p class="modal-subtitle">Choose a topic to explore</p>
+        </div>
+        <button class="modal-close" id="modal-close" aria-label="Close help menu">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-options">
+        <button class="modal-option-card" id="modal-btn-tutorial" aria-label="Open Onboarding Tutorial">
+          <div class="option-icon option-icon--blue" aria-hidden="true">🖥️</div>
+          <div class="option-text">
+            <h3>Onboarding Tutorial</h3>
+            <p>Step-by-step visual guide through your first days at Collaborate</p>
+          </div>
+          <svg class="option-arrow" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <button class="modal-option-card" id="modal-btn-tax" aria-label="Open Tax Details">
+          <div class="option-icon option-icon--green" aria-hidden="true">📋</div>
+          <div class="option-text">
+            <h3>Tax Details Guide</h3>
+            <p>Understand all tax-saving sections: 80C, 80D, 80E, 80GG and more</p>
+          </div>
+          <svg class="option-arrow" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <p>Need further help? Contact HR at <strong>hr@collaborate.in</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE WRAPPER ───────────────────────────────────── -->
+  <div class="page-wrapper" id="page-wrapper">
+
+    <!-- ════ VIEW: HOME ════════════════════════════════════ -->
+    <section class="view view--active" id="view-home" aria-label="Home">
+      <div class="home-hero">
+        <div class="hero-badge" id="hero-badge">🚀 New Employee Portal</div>
+        <h1 class="hero-title" id="hero-title">Welcome to <span class="hero-gradient">Collaborate</span></h1>
+        <p class="hero-desc" id="hero-desc">Your one-stop onboarding assistant. Get familiar with your tools, understand your benefits, and learn how to save on taxes — all in one place.</p>
+      </div>
+
+      <div class="home-cards" id="home-cards">
+        <article class="feature-card" id="card-tutorial" tabindex="0" role="button" aria-label="Open Onboarding Tutorial">
+          <div class="feature-card__icon" aria-hidden="true">🖥️</div>
+          <h2 class="feature-card__title">Onboarding Tutorial</h2>
+          <p class="feature-card__desc">Follow our 8-step visual guide to get set up, explore the platform, and complete compliance training seamlessly.</p>
+          <div class="feature-card__cta">
+            View Tutorial
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </article>
+
+        <article class="feature-card" id="card-tax" tabindex="0" role="button" aria-label="Open Tax Details Guide">
+          <div class="feature-card__icon" aria-hidden="true">💰</div>
+          <h2 class="feature-card__title">Tax Details Guide</h2>
+          <p class="feature-card__desc">Deep-dive into all 12 tax-saving sections — from 80C to 80GG — with beginner-friendly explanations, examples, and eligibility criteria.</p>
+          <div class="feature-card__cta">
+            Explore Tax Guide
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </article>
+      </div>
+
+      <div class="home-stats" id="home-stats" aria-label="Portal statistics">
+        <div class="stat-item">
+          <span class="stat-number">8</span>
+          <span class="stat-label">Tutorial Steps</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number">12</span>
+          <span class="stat-label">Tax Sections</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number">₹2L+</span>
+          <span class="stat-label">Potential Tax Savings</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Free Guidance</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ VIEW: TUTORIAL ═══════════════════════════════ -->
+    <section class="view" id="view-tutorial" aria-label="Onboarding Tutorial" hidden>
+      <div class="tutorial-top-bar">
+        <button class="back-btn" id="tutorial-back-btn" aria-label="Back to Home">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+      </div>
+
+      <div class="tutorial-page-header">
+        <div class="tutorial-badge"><span class="badge-dot"></span> WELCOME ONBOARD</div>
+        <h1 class="tutorial-page-title">Onboarding <span class="text-primary">Guidance Portal</span></h1>
+        <p class="tutorial-page-subtitle">
+          Step-by-step visual assistance for new users —<br />
+          understand the onboarding process without needing HR support.
+        </p>
+      </div>
+
+      <div class="tutorial-main-card">
+        <div class="tutorial-card-header">
+          <div class="tutorial-card-title-group">
+            <h2 class="tutorial-card-title">Screenshot Walkthrough</h2>
+            <p class="tutorial-card-subtitle">Navigate with arrows, dots, or let it play automatically.</p>
+          </div>
+          <button class="autoplay-btn" id="autoplay-btn" aria-pressed="true" aria-label="Pause autoplay">
+            <svg id="autoplay-icon-pause" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            <svg id="autoplay-icon-play" width="14" height="14" fill="currentColor" viewBox="0 0 24 24" style="display:none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span id="autoplay-label">Pause</span>
+          </button>
+        </div>
+
+        <div class="tutorial-step-indicator" id="slider-counter" aria-live="polite" aria-atomic="true">
+          STEP <span id="slide-current">1</span> OF <span id="slide-total">8</span>
+        </div>
+
+        <!-- Slider -->
+        <div class="slider-container" id="slider-container" aria-label="Onboarding Tutorial Slides" aria-roledescription="carousel">
+          <div class="slider-track" id="slider-track" aria-live="polite">
+            <!-- Slides injected by JS -->
+          </div>
+
+          <button class="slider-btn slider-btn--prev" id="slider-prev" aria-label="Previous slide">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="slider-btn slider-btn--next" id="slider-next" aria-label="Next slide">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <!-- Progress dots -->
+        <div class="slider-dots" id="slider-dots" role="tablist" aria-label="Slide navigation">
+          <!-- Dots injected by JS -->
+        </div>
+      </div>
+
+      <!-- Need Help Section -->
+      <div class="help-section" id="tutorial-help-section">
+        <h2 class="help-section__title">Need <span class="text-primary">Help?</span></h2>
+        <p class="help-section__subtitle">
+          Follow these screenshots independently to complete your onboarding.<br />
+          Each image corresponds to an action on the platform — simply replicate what you see on screen, step by step.
+        </p>
+
+        <div class="help-section__cards">
+          <div class="help-card">
+            <div class="help-card__icon-box help-card__icon-box--green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
+            <h3 class="help-card__title">Visual Walkthroughs</h3>
+            <p class="help-card__desc">Real screenshots capturing every step of the process — nothing is skipped.</p>
+          </div>
+
+          <div class="help-card">
+            <div class="help-card__icon-box help-card__icon-box--blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </div>
+            <h3 class="help-card__title">Self-Paced Learning</h3>
+            <p class="help-card__desc">Pause, go back and revisit any step at your own comfort — no rush.</p>
+          </div>
+
+          <div class="help-card">
+            <div class="help-card__icon-box help-card__icon-box--orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+            </div>
+            <h3 class="help-card__title">No HR Needed</h3>
+            <p class="help-card__desc">Everything you need is right here. Complete your onboarding independently.</p>
+          </div>
+        </div>
+
+        <div class="help-section__cta">
+          <button class="contact-support-btn" id="btn-contact-support" aria-label="Contact Support">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" style="margin-right: 4px;">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Contact Support
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ VIEW: TAX ════════════════════════════════════ -->
+    <section class="view" id="view-tax" aria-label="Tax Details Guide" hidden>
+      <div class="tax-layout" id="tax-layout">
+
+        <!-- Tax Sidebar -->
+        <aside class="sidebar tax-sidebar" id="tax-sidebar" aria-label="Tax sections navigation">
+          
+          <div class="brand-panel" id="tax-back-btn" style="cursor: pointer;" title="Back to Home">
+            <div class="brand-badge">T</div>
+            <div>
+              <h1>Tax Help Portal</h1>
+              <p>Employee onboarding guide</p>
+            </div>
+          </div>
+          
+          <div class="search-panel">
+            <label for="tax-search" class="search-label">Search sections</label>
+            <div class="search-input-wrap">
+              <input type="search" id="tax-search" placeholder="Search 80C, 80D, 80GG..." aria-label="Search tax sections" />
+              <span class="search-icon">🔍</span>
+            </div>
+          </div>
+          
+          <nav class="section-list tax-nav" id="tax-nav" aria-label="Tax section list">
+            <!-- Items injected by JS -->
+          </nav>
+        </aside>
+
+        <!-- Tax Content -->
+        <main class="content-area tax-content" id="tax-content" aria-label="Tax section details">
+          
+          <header class="content-header">
+            <button class="mobile-toggle tax-mobile-toggle" id="tax-mobile-toggle" aria-label="Toggle sidebar">☰</button>
+            <div>
+              <p class="eyebrow">Employee tax learning</p>
+              <h2 id="contentTitle">Welcome to your Tax Help Portal</h2>
+            </div>
+          </header>
+
+          <div class="tax-content__inner" id="tax-content-inner" role="region" aria-live="polite">
+            <!-- Content injected by JS -->
+          </div>
+          
+        </main>
+
+        <!-- Mobile overlay backdrop -->
+        <div class="tax-sidebar-backdrop" id="tax-sidebar-backdrop" aria-hidden="true"></div>
+      </div>
+    </section>
+
+  </div><!-- /.page-wrapper -->
+
+  <!-- ── SCRIPTS ────────────────────────────────────────── -->
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
