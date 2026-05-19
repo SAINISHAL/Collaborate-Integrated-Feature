@@ -14,7 +14,7 @@
   <!-- ── NAVBAR ──────────────────────────────────────────── -->
   <header class="navbar" id="navbar" role="banner">
     <div class="nav-brand" id="nav-brand">
-      <div class="nav-logo" id="nav-logo" aria-hidden="true">CO</div>
+      <img src="logoicon.png" alt="Collaborate Logo" style="width: 38px; height: 38px; object-fit: contain; border-radius: 10px;" id="nav-logo" />
       <div class="nav-brand-text">
         <span class="nav-title" id="nav-title">Collaborate</span>
         <span class="nav-sub" id="nav-sub">Employee Onboarding Portal</span>
@@ -79,11 +79,76 @@
           </div>
           <svg class="option-arrow" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
+
+        <button class="modal-option-card" id="modal-btn-chat" aria-label="Open AI Chat Assistant">
+          <div class="option-icon option-icon--purple" aria-hidden="true">🤖</div>
+          <div class="option-text">
+            <h3>AI Help Assistant</h3>
+            <p>Ask anything about onboarding — get instant AI-powered answers</p>
+          </div>
+          <svg class="option-arrow" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
 
       <div class="modal-footer">
         <p>Need further help? Contact HR at <strong>hr@collaborate.in</strong></p>
       </div>
+    </div>
+  </div>
+
+  <!-- ── AI CHATBOT PANEL ───────────────────────────────── -->
+  <div class="chatbot-overlay" id="chatbot-overlay" role="dialog" aria-modal="true" aria-labelledby="chatbot-title" hidden>
+    <div class="chatbot-panel" id="chatbot-panel">
+
+      <!-- Header -->
+      <div class="chatbot-header">
+        <div class="chatbot-header-info">
+          <div class="chatbot-avatar" aria-hidden="true">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <h2 id="chatbot-title" class="chatbot-title">AI Help Assistant</h2>
+            <span class="chatbot-status" id="chatbot-status">
+              <span class="chatbot-status-dot"></span> Online
+            </span>
+          </div>
+        </div>
+        <button class="chatbot-close" id="chatbot-close" aria-label="Close chatbot">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Messages Area -->
+      <div class="chatbot-messages" id="chatbot-messages" role="log" aria-live="polite" aria-label="Chat messages">
+        <!-- Welcome message injected by JS -->
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="chatbot-typing" id="chatbot-typing" aria-hidden="true" hidden>
+        <div class="typing-bubble">
+          <span></span><span></span><span></span>
+        </div>
+        <span class="typing-label">Assistant is thinking…</span>
+      </div>
+
+      <!-- Input Area -->
+      <div class="chatbot-input-area">
+        <div class="chatbot-input-wrap">
+          <textarea
+            id="chatbot-input"
+            class="chatbot-input"
+            placeholder="Ask me anything about onboarding…"
+            rows="1"
+            aria-label="Type your message"
+            maxlength="500"
+          ></textarea>
+          <button class="chatbot-send-btn" id="chatbot-send" aria-label="Send message">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <p class="chatbot-disclaimer">Powered by Llama 3 · Groq API</p>
+      </div>
+
     </div>
   </div>
 
