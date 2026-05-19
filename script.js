@@ -18,6 +18,8 @@
   const btnTutorialNav= document.getElementById("btn-tutorial-nav");
   const btnTaxNav     = document.getElementById("btn-tax-nav");
   const btnHelp       = document.getElementById("btn-help");
+  const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+  const navLinks      = document.getElementById("nav-links");
 
   // Home CTA
   const cardTutorial    = document.getElementById("card-tutorial");
@@ -361,6 +363,23 @@
     btnTutorialNav.addEventListener("click", () => showView("tutorial"));
     btnTaxNav.addEventListener("click", () => showView("tax"));
     btnHelp.addEventListener("click", openModal);
+
+    // Mobile Navbar toggle
+    if (mobileMenuBtn && navLinks) {
+      mobileMenuBtn.addEventListener("click", () => {
+        mobileMenuBtn.classList.toggle("open");
+        navLinks.classList.toggle("open");
+      });
+
+      // Close mobile menu on nav link click
+      const navButtons = navLinks.querySelectorAll(".nav-btn");
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          mobileMenuBtn.classList.remove("open");
+          navLinks.classList.remove("open");
+        });
+      });
+    }
 
     // Home CTAs
     cardTutorial.addEventListener("click", () => showView("tutorial"));
