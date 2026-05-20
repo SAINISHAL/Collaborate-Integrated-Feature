@@ -1962,3 +1962,55 @@ svg {
     transform: translateY(0);
   }
 }
+
+/* ── READ ALOUD ACCESSIBILITY ───────────────────────────── */
+.read-aloud-btn {
+  position: absolute;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 99px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: var(--c-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInOut ReadAloud 0.3s ease;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.read-aloud-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(37, 99, 235, 0.2);
+  border-color: var(--c-primary);
+}
+
+.read-aloud-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes fadeInOutReadAloud {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Ensure selected text is still visible */
+::selection {
+  background: rgba(37, 99, 235, 0.15);
+  color: inherit;
+}

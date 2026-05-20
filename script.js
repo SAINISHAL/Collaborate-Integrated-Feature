@@ -81,6 +81,7 @@
     attachListeners();
     showView("home");
     initChatbot();
+    initReadAloud();
   }
 
   /* ── VIEW SWITCHING ────────────────────────────────────── */
@@ -609,5 +610,98 @@
   }
 
   /* ── BOOT ──────────────────────────────────────────────── */
+
+  /* ══════════════════════════════════════════════════════════
+     READ ALOUD ACCESSIBILITY MODULE
+     ══════════════════════════════════════════════════════════ */
+  let readAloudBtn = null;
+  let currentSelectionText = "";
+
+  function initReadAloud() {
+    document.addEventListener("mouseup", handleTextSelection);
+    document.addEventListener("keyup", handleTextSelection); // Handle keyboard selection
+    
+    // Hide button when clicking elsewhere or selection is cleared
+    document.addEventListener("mousedown", (e) => {
+      if (readAloudBtn && !readAloudBtn.contains(e.target)) {
+        removeReadAloudBtn();
+      }
+    });
+
+    // Special case: clicking outside should stop speech too if desired
+    window.addEventListener("click", (e) => {
+      if (!readAloudBtn || !readAloudBtn.contains(e.target)) {
+        window.speechSynthesis.cancel();
+      }
+    });
+  }
+
+  function handleTextSelection(e) {
+    // Small delay to ensure selection is complete
+    setTimeout(() => {
+      const selection = window.getSelection();
+      const selectedText = selection.toString().trim();
+
+      if (selectedText.length > 0) {
+        currentSelectionText = selectedText;
+        showReadAloudBtn(selection);
+      } else {
+        removeReadAloudBtn();
+      }
+    }, 10);
+  }
+
+  function showReadAloudBtn(selection) {
+    removeReadAloudBtn(); // Clear previous
+
+    if (selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    readAloudBtn = document.createElement("button");
+    readAloudBtn.className = "read-aloud-btn";
+    readAloudBtn.innerHTML = `<span>🔊</span> Read Aloud`;
+    readAloudBtn.setAttribute("aria-label", "Read selected text aloud");
+
+    // Position the button above the selection
+    const btnTop = rect.top + window.scrollY - 45;
+    const btnLeft = rect.left + window.scrollX + (rect.width / 2) - 60;
+
+    readAloudBtn.style.top = `${btnTop}px`;
+    readAloudBtn.style.left = `${btnLeft}px`;
+
+    readAloudBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      speakText(currentSelectionText);
+      removeReadAloudBtn();
+    });
+
+    document.body.appendChild(readAloudBtn);
+  }
+
+  function removeReadAloudBtn() {
+    if (readAloudBtn) {
+      readAloudBtn.remove();
+      readAloudBtn = null;
+    }
+  }
+
+  function speakText(text) {
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    if (!text) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Optional: refine voice settings
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    window.speechSynthesis.speak(utterance);
+  }
+
   document.addEventListener("DOMContentLoaded", initPortal);
 })();
