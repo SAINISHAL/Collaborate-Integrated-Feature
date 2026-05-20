@@ -565,7 +565,7 @@
     btnHelp.addEventListener("click", openChatbot);
     if (btnGoOnboarding) {
         btnGoOnboarding.addEventListener("click", () => {
-            window.location.href = "http://103.22.172.62/collaboratehrms?logout=True&_=639148876872533363";
+            window.location.href = "http://103.22.172.62/collaboratehrms/onboarding/login";
         });
     }
 
