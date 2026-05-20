@@ -393,7 +393,7 @@ svg {
 /* ── HOME VIEW ───────────────────────────────────────────── */
 .home-hero {
   text-align: center;
-  padding: 60px 40px 40px;
+  padding: 40px 40px 30px;
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -417,10 +417,10 @@ svg {
 }
 
 .hero-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.5rem, 6vw, 3.8rem);
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   color: var(--c-navy);
 }
 
@@ -430,33 +430,34 @@ svg {
 }
 
 .hero-desc {
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: #64748b;
   max-width: 620px;
-  margin: 0 auto 56px;
+  margin: 0 auto 40px;
   line-height: 1.6;
 }
 
 .home-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-  padding: 0 40px 48px;
+  gap: 28px;
+  padding: 0 40px 40px;
   max-width: 1000px;
   margin: 0 auto;
 }
 
 .feature-card {
   background: #fff;
-  border-radius: 28px;
+  border-radius: 24px;
   border: 1px solid var(--c-border);
-  padding: 40px;
+  padding: 32px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   cursor: pointer;
   transition: var(--trans);
   display: flex;
   flex-direction: column;
   text-align: left;
+  min-height: 320px;
 }
 
 .feature-card:hover {
@@ -466,34 +467,37 @@ svg {
 }
 
 .feature-card__icon {
-  font-size: 2.5rem;
-  margin-bottom: 24px;
+  font-size: 2.2rem;
+  margin-bottom: 16px;
 }
 
 .feature-card__title {
-  font-size: 1.45rem;
-  margin-bottom: 12px;
+  font-size: 1.25rem;
+  margin-bottom: 10px;
   color: var(--c-navy);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .feature-card__desc {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: #64748b;
-  line-height: 1.6;
-  margin-bottom: 28px;
+  line-height: 1.55;
+  margin-bottom: auto;
+  flex-grow: 1;
 }
 
 .feature-card__cta {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: .95rem;
+  font-size: .9rem;
   font-weight: 700;
   color: var(--c-primary);
   text-transform: none;
-  /* Back to normal case as per screenshot text style but navy/gold */
   letter-spacing: 0;
+  margin-top: 20px;
+  padding: 8px 0;
+  transition: var(--trans);
 }
 
 .cta-arrow {
