@@ -46,15 +46,16 @@ Your responsibilities:
 - keep responses concise
 - be beginner friendly
 - focus only on onboarding/help-related questions
+- If a user asks for HR contact, phone number, email, or expresses that they are not finding what they need (disturbance), tell them to mail: babu@collaboratesolutions.com. 
+- Mention that this is the HR's mail and they should contact them for further assistance.
 
 Rules:
 - keep answers short and clear
 - avoid unnecessary explanations
 - respond professionally
-- if unsure, ask user to contact HR/admin
 - focus only on company onboarding assistance."""
 
-# ── Onboarding keywords for video detection ───────────────────
+# ── Onboarding and HR keywords for detection ───────────────────
 ONBOARDING_KEYWORDS = [
     "onboarding", "tutorial", "document upload", "upload document",
     "profile setup", "set up profile", "form submission", "submit form",
@@ -64,6 +65,12 @@ ONBOARDING_KEYWORDS = [
     "step by step", "steps", "help me start", "how do i",
 ]
 
+HR_KEYWORDS = [
+    "hr", "human resources", "hr number", "hr mail", "hr contact",
+    "contact hr", "talk to hr", "disturbance", "not getting", 
+    "not finding", "no help", "stuck", "problem", "issue", "assistance"
+]
+
 VIDEO_PATH = "HelpmeBot/videos/tutorial_video.mp4"
 
 
@@ -71,6 +78,12 @@ def is_onboarding_query(message: str) -> bool:
     """Return True if the message contains any onboarding keyword."""
     text = message.lower()
     return any(kw in text for kw in ONBOARDING_KEYWORDS)
+
+
+def is_hr_query(message: str) -> bool:
+    """Return True if the message contains any HR or disturbance keyword."""
+    text = message.lower()
+    return any(kw in text for kw in HR_KEYWORDS)
 
 
 # ── Routes ───────────────────────────────────────────────────
@@ -88,6 +101,12 @@ def chat():
     user_message = str(data["message"]).strip()
     if not user_message:
         return jsonify({"error": "Message cannot be empty."}), 400
+
+    # Quick check for HR/Disturbance queries
+    if is_hr_query(user_message):
+        return jsonify({
+            "response": "If you are experiencing any issues or need direct assistance from Human Resources, please mail to babu@collaboratesolutions.com. This is the HR's mail, please contact them for further help."
+        })
 
     # Call Groq Llama 3
     try:
