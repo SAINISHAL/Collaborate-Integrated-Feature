@@ -543,7 +543,7 @@
     btnHome.addEventListener("click", () => showView("home"));
     btnTutorialNav.addEventListener("click", () => showView("tutorial"));
     btnTaxNav.addEventListener("click", () => showView("tax"));
-    btnHelp.addEventListener("click", openModal);
+    btnHelp.addEventListener("click", openChatbot);
 
     // Mobile menu
     if (mobileMenuBtn && navLinks) {
@@ -582,7 +582,7 @@
 
     // Contact support button in tutorial
     const btnContactSupport = document.getElementById("btn-contact-support");
-    if (btnContactSupport) btnContactSupport.addEventListener("click", openModal);
+    if (btnContactSupport) btnContactSupport.addEventListener("click", openChatbot);
 
     // Keyboard: arrow keys for slider, Escape handled per-modal
     document.addEventListener("keydown", (e) => {
