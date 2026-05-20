@@ -55,42 +55,32 @@ Rules:
 - respond professionally
 - focus only on company onboarding assistance."""
 
-# ── Onboarding and HR keywords for detection ───────────────────
-ONBOARDING_KEYWORDS = [
-    "onboarding", "tutorial", "document upload", "upload document",
-    "profile setup", "set up profile", "form submission", "submit form",
-    "onboarding process", "how to start", "getting started",
-    "first day", "new employee", "registration", "sign up",
-    "account setup", "walkthrough", "guide me", "show me how",
-    "step by step", "steps", "help me start", "how do i",
+# ── Keywords for Intelligent Routing ─────────────────────────
+HR_DIRECT_KEYWORDS = [
+    "hr number", "hr mail", "hr contact", "contact hr", "talk to hr", 
+    "hr email", "human resources number", "babu's email"
 ]
 
-HR_KEYWORDS = [
-    "hr", "human resources", "hr number", "hr mail", "hr contact",
-    "contact hr", "talk to hr", "disturbance", "not getting", 
-    "not finding", "no help", "stuck", "problem", "issue", "assistance"
+ISSUE_KEYWORDS = [
+    "issue", "not getting", "not finding", "no help", "stuck", 
+    "problem", "disturbance", "wrong", "error", "help needed"
+]
+
+ONBOARDING_KEYWORDS = [
+    "onboarding", "tutorial", "guide", "walkthrough", "how to start",
+    "portal help", "navigation", "steps", "getting started"
 ]
 
 VIDEO_PATH = "HelpmeBot/videos/tutorial_video.mp4"
 
-
-def is_onboarding_query(message: str) -> bool:
-    """Return True if the message contains any onboarding keyword."""
+def contains_keywords(message: str, keywords: list) -> bool:
     text = message.lower()
-    return any(kw in text for kw in ONBOARDING_KEYWORDS)
-
-
-def is_hr_query(message: str) -> bool:
-    """Return True if the message contains any HR or disturbance keyword."""
-    text = message.lower()
-    return any(kw in text for kw in HR_KEYWORDS)
-
+    return any(kw in text for kw in keywords)
 
 # ── Routes ───────────────────────────────────────────────────
 @app.route("/", methods=["GET"])
 def health():
     return jsonify({"status": "Collaborate Help Assistant is running ✅"})
-
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -102,13 +92,27 @@ def chat():
     if not user_message:
         return jsonify({"error": "Message cannot be empty."}), 400
 
-    # Quick check for HR/Disturbance queries
-    if is_hr_query(user_message):
+    # 1. Direct HR Contact Request
+    if contains_keywords(user_message, HR_DIRECT_KEYWORDS):
         return jsonify({
-            "response": "If you are experiencing any issues or need direct assistance from Human Resources, please mail to babu@collaboratesolutions.com. This is the HR's mail, please contact them for further help."
+            "response": "Please mail to babu@collaboratesolutions.com. This is the HR's mail, please contact them for direct assistance."
         })
 
-    # Call Groq Llama 3
+    # 2. Onboarding Issue Detection (Give Video + HR Backup)
+    if contains_keywords(user_message, ONBOARDING_KEYWORDS) and contains_keywords(user_message, ISSUE_KEYWORDS):
+        return jsonify({
+            "response": "I'm sorry you're having trouble. Please watch this onboarding tutorial video first to resolve common issues. \n\nIf you are still facing problems after watching, please mail to babu@collaboratesolutions.com for HR support.",
+            "video": VIDEO_PATH
+        })
+    
+    # 3. Simple Onboarding Guide Request (Just Video)
+    if contains_keywords(user_message, ONBOARDING_KEYWORDS):
+        return jsonify({
+            "response": "Here is the onboarding tutorial video to help you get started with the portal.",
+            "video": VIDEO_PATH
+        })
+
+    # 4. General Questions (Use AI Llama 3)
     try:
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant",
@@ -120,18 +124,10 @@ def chat():
             max_tokens=512,
         )
         ai_response = completion.choices[0].message.content.strip()
+        return jsonify({"response": ai_response})
     except Exception as e:
         print(f"[ERROR] Groq API call failed: {e}")
-        return jsonify({"error": f"Groq API error: {str(e)}"}), 500
-
-    # Build response
-    response_payload = {"response": ai_response}
-
-    # Attach video if onboarding-related
-    if is_onboarding_query(user_message):
-        response_payload["video"] = VIDEO_PATH
-
-    return jsonify(response_payload)
+        return jsonify({"error": "I encountered an error answering your question. Please try again or contact HR."}), 500
 
 
 # ── Serve video file ─────────────────────────────────────────
