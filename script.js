@@ -16,10 +16,11 @@
   // Navbar buttons
   const btnHome        = document.getElementById("btn-home");
   const btnTutorialNav = document.getElementById("btn-tutorial-nav");
-  const btnTaxNav      = document.getElementById("btn-tax-nav");
-  const btnHelp        = document.getElementById("btn-help");
-  const mobileMenuBtn  = document.getElementById("mobile-menu-btn");
-  const navLinks       = document.getElementById("nav-links");
+  const btnTaxNav          = document.getElementById("btn-tax-nav");
+  const btnGoOnboarding  = document.getElementById("btn-go-onboarding");
+  const btnHelp            = document.getElementById("btn-help");
+  const mobileMenuBtn      = document.getElementById("mobile-menu-btn");
+  const navLinks           = document.getElementById("nav-links");
 
   // Home CTA
   const cardTutorial = document.getElementById("card-tutorial");
@@ -98,6 +99,20 @@
         el.style.display = "none";
       }
     });
+
+    // Handle Navbar items visibility
+    if (viewName === "home") {
+        btnHome.style.display = "none";
+        btnTutorialNav.style.display = "none";
+        btnTaxNav.style.display = "none";
+        if (btnGoOnboarding) btnGoOnboarding.style.display = "flex";
+    } else {
+        btnHome.style.display = "flex";
+        btnTutorialNav.style.display = "none";
+        btnTaxNav.style.display = "none";
+        if (btnGoOnboarding) btnGoOnboarding.style.display = "none";
+    }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -548,6 +563,11 @@
     btnTutorialNav.addEventListener("click", () => showView("tutorial"));
     btnTaxNav.addEventListener("click", () => showView("tax"));
     btnHelp.addEventListener("click", openChatbot);
+    if (btnGoOnboarding) {
+        btnGoOnboarding.addEventListener("click", () => {
+            window.location.href = "http://103.22.172.62/collaboratehrms?logout=True&_=639148876872533363";
+        });
+    }
 
     // Mobile menu
     if (mobileMenuBtn && navLinks) {
