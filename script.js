@@ -282,7 +282,10 @@
 
     return `
       <div class="content-card">
-        <div class="status-banner">Clear and friendly guide for ${sec.id} deductions</div>
+        <div class="status-banner">
+          <span>Clear and friendly guide for ${sec.id} deductions</span>
+          <button class="tax-speaker-btn" data-id="${sec.id}" title="Listen to full section">🔊</button>
+        </div>
 
         <div class="content-section">
           ${renderCardHeading("Introduction", sec.intro)}
@@ -599,6 +602,14 @@
     taxSidebarBackdrop.addEventListener("click", closeTaxSidebar);
     window.addEventListener("resize", () => { if (window.innerWidth > 768) closeTaxSidebar(); });
 
+    // Tax content speaker
+    taxContentInner.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tax-speaker-btn");
+      if (btn) {
+        speakTaxSectionFull();
+      }
+    });
+
     // ── Chatbot ──────────────────────────────────────────────
     chatbotClose.addEventListener("click", closeChatbot);
     chatbotOverlay.addEventListener("click", (e) => { if (e.target === chatbotOverlay) closeChatbot(); });
@@ -687,20 +698,54 @@
     }
   }
 
+  function speakTaxSectionFull() {
+    if (!window.speechSynthesis) {
+      console.error("Speech synthesis not supported");
+      return;
+    }
+
+    // Cancel any current speech
+    window.speechSynthesis.cancel();
+    
+    const card = document.getElementById("tax-content-inner");
+    if (!card) return;
+    
+    // Get text content and clean it up
+    let textToRead = card.textContent || card.innerText || "";
+    
+    // Clean up extra whitespace and the emoji/button text
+    textToRead = textToRead.replace(/🔊/g, "").replace(/\s\s+/g, " ").trim();
+    
+    if (!textToRead) return;
+
+    const utterance = new SpeechSynthesisUtterance(textToRead);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    // Some browsers need a slight delay after cancel()
+    setTimeout(() => {
+      window.speechSynthesis.speak(utterance);
+    }, 50);
+  }
+
   function speakText(text) {
+    if (!window.speechSynthesis) return;
+
     // Cancel any ongoing speech
     window.speechSynthesis.cancel();
 
     if (!text) return;
 
     const utterance = new SpeechSynthesisUtterance(text);
-    
-    // Optional: refine voice settings
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
 
-    window.speechSynthesis.speak(utterance);
+    // Some browsers need a slight delay after cancel()
+    setTimeout(() => {
+      window.speechSynthesis.speak(utterance);
+    }, 50);
   }
 
   document.addEventListener("DOMContentLoaded", initPortal);
