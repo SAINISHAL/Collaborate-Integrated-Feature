@@ -1022,7 +1022,7 @@ svg {
 
 .content-area {
   padding: 36px 48px;
-  background: var(--bg);
+  background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
   min-height: calc(100vh - var(--nav-h));
   overflow-y: auto;
 }
@@ -1033,6 +1033,8 @@ svg {
   gap: 24px;
   margin-bottom: 28px;
   min-height: 80px;
+  padding: 24px 0;
+  border-bottom: 2px solid var(--c-primary);
 }
 
 .mobile-toggle {
@@ -1055,7 +1057,8 @@ svg {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.78rem;
-  color: #2563eb;
+  color: var(--c-primary);
+  font-weight: 700;
 }
 
 .content-header h2 {
@@ -1063,13 +1066,18 @@ svg {
   font-size: clamp(1.75rem, 2.2vw, 2.7rem);
   line-height: 1.1;
   font-weight: 700;
+  color: var(--c-navy);
+  background: linear-gradient(135deg, var(--c-navy) 0%, var(--c-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .content-card {
-  background: var(--surface);
+  background: var(--c-surface);
   border-radius: 32px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(31, 50, 77, 0.08);
+  box-shadow: 0 8px 24px rgba(17, 24, 39, 0.08);
+  border: 2px solid var(--c-primary);
   padding: 32px;
   overflow: hidden;
 }
@@ -1079,12 +1087,14 @@ svg {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 12px 18px;
+  padding: 14px 20px;
   margin-bottom: 26px;
   border-radius: 16px;
-  background: var(--primary-soft);
-  color: var(--primary);
+  background: linear-gradient(135deg, var(--c-primary-soft) 0%, rgba(197, 160, 89, 0.08) 100%);
+  color: var(--c-primary);
   font-weight: 600;
+  border: 1px solid var(--c-primary);
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.1);
 }
 
 .content-section {
@@ -1105,23 +1115,29 @@ svg {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 700;
+  color: var(--c-navy);
+  border-left: 4px solid var(--c-primary);
+  padding-left: 12px;
 }
 
 .section-heading p {
-  margin: 8px 0 0;
-  color: var(--muted);
+  margin: 8px 0 0 16px;
+  color: var(--c-muted);
+  font-size: 0.9rem;
 }
 
 .section-text {
   margin: 0;
   line-height: 1.85;
-  color: #33415b;
+  color: #475569;
+  font-size: 0.95rem;
 }
 
 .bullet-list {
   margin: 14px 0 0 0;
   padding-left: 20px;
-  color: #3a4a66;
+  color: #475569;
+  font-size: 0.95rem;
 }
 
 .bullet-list li {
@@ -1132,9 +1148,10 @@ svg {
 .info-card {
   padding: 22px;
   border-radius: 22px;
-  background: #f8fbff;
-  border: 1px solid rgba(37, 99, 235, 0.12);
+  background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
+  border: 2px solid var(--c-primary);
   margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.1);
 }
 
 .info-card h4 {
