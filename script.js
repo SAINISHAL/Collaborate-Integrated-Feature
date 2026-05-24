@@ -83,6 +83,7 @@
     showView("home");
     initChatbot();
     initReadAloud();
+    initVoiceNarration(); // ← Voice Narration module bootstrap
   }
 
   /* ── VIEW SWITCHING ────────────────────────────────────── */
@@ -150,9 +151,43 @@
       el.setAttribute("role", "tabpanel");
       el.setAttribute("aria-roledescription", "slide");
       el.setAttribute("aria-label", `${slide.badge}: ${slide.title}`);
-      el.innerHTML = `<img src="${slide.image}" class="full-slide-image" alt="${slide.title} slide" />`;
+
+      // ── Slide image
+      const img = document.createElement("img");
+      img.src   = slide.image;
+      img.className = "full-slide-image";
+      img.alt   = `${slide.title} slide`;
+      el.appendChild(img);
+
+      // ── Speaker button (top-right corner of each slide)
+      const speakBtn = document.createElement("button");
+      speakBtn.className = "slide-speaker-btn";
+      speakBtn.id        = `slide-speaker-${idx}`;
+      speakBtn.setAttribute("aria-label", `Read narration for slide ${idx + 1}: ${slide.title}`);
+      speakBtn.setAttribute("title", "Click to hear narration for this slide");
+      speakBtn.setAttribute("tabindex", "0");
+      speakBtn.innerHTML = `
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      `;
+      // Click: toggle narration for this slide
+      speakBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        handleSpeakerButtonClick(idx);
+      });
+      // Keyboard: Space / Enter trigger click
+      speakBtn.addEventListener("keydown", (e) => {
+        if (e.key === " " || e.key === "Enter") { e.preventDefault(); speakBtn.click(); }
+      });
+      el.appendChild(speakBtn);
+
       sliderTrack.appendChild(el);
 
+      // ── Progress dot
       const dot = document.createElement("button");
       dot.className = "dot" + (idx === 0 ? " active" : "");
       dot.setAttribute("role", "tab");
@@ -192,6 +227,11 @@
     });
 
     slideCurrent.textContent = currentSlide + 1;
+
+    // ── Voice narration: stop previous, optionally start for new slide
+    stopNarration();          // always stop previous voice on slide change
+    resetAllSpeakerBtns();    // reset all speaker button visuals
+    tryAutoplayNarration();   // attempt autoplay if enabled
   }
 
   function nextSlide() { goToSlide(currentSlide + 1); }
@@ -641,6 +681,235 @@
   }
 
   /* ── BOOT ──────────────────────────────────────────────── */
+
+  /* ══════════════════════════════════════════════════════════
+     VOICE NARRATION MODULE
+     ── Uses browser-native SpeechSynthesis API only ──────────
+     ── Narration text sourced from onboardingVoiceContent ────
+     ══════════════════════════════════════════════════════════ */
+
+  // ── Internal state ──────────────────────────────────────
+  let voiceUtterance   = null;   // active SpeechSynthesisUtterance object
+  let voiceIsSpeaking  = false;  // true while speech is actively playing
+  let voiceIsPaused    = false;  // true while speech is paused
+  let voiceActiveSlide = -1;     // index of slide currently narrating
+  let voiceSubtitleEl  = null;   // subtitle bar DOM node (created once)
+  let voiceAutoplay    = false;  // global autoplay toggle (off by default)
+  let speechSupported  = false;  // set true if SpeechSynthesis exists
+
+  // ── SpeechSynthesis availability check ───────────────────
+  // We check at run-time rather than at parse-time so the flag
+  // reflects the actual browser capability.
+  function initVoiceNarration() {
+    if ("speechSynthesis" in window) {
+      speechSupported = true;
+    } else {
+      // Unsupported — inject a one-time notice into the tutorial section
+      const notice = document.createElement("p");
+      notice.className  = "narration-unsupported";
+      notice.textContent = "Voice narration not supported in this browser.";
+      const mainCard = document.querySelector(".tutorial-main-card");
+      if (mainCard) mainCard.appendChild(notice);
+      return; // nothing more to do
+    }
+
+    // Build the subtitle bar and inject it once below the slider container
+    buildSubtitleBar();
+
+    // Cancel any lingering speech when the page is hidden / closed
+    window.addEventListener("pagehide", stopNarration);
+    window.addEventListener("beforeunload", stopNarration);
+  }
+
+  // ── Build subtitle / caption bar ────────────────────────
+  // Created once, inserted after .slider-container.
+  // Its text content is updated live as narration proceeds.
+  function buildSubtitleBar() {
+    const container = document.getElementById("slider-container");
+    if (!container) return;
+
+    voiceSubtitleEl = document.createElement("div");
+    voiceSubtitleEl.id        = "narration-subtitle";
+    voiceSubtitleEl.className = "narration-subtitle";
+    voiceSubtitleEl.setAttribute("aria-live", "polite");
+    voiceSubtitleEl.setAttribute("aria-label", "Narration subtitle");
+    voiceSubtitleEl.textContent = "Click the 🔊 speaker icon to hear the guide for this step.";
+
+    // Insert immediately after the slider container element
+    container.insertAdjacentElement("afterend", voiceSubtitleEl);
+  }
+
+  // ── Helper: get narration data for a slide index ─────────
+  // Slide indices are 0-based in JS; config keys are step1, step2 …
+  function getNarrationData(slideIdx) {
+    const key = `step${slideIdx + 1}`;
+    if (typeof onboardingVoiceContent !== "undefined" &&
+        onboardingVoiceContent[key]) {
+      return onboardingVoiceContent[key];
+    }
+    return null;
+  }
+
+  // ── Clean narration text (collapse whitespace) ───────────
+  function cleanNarrationText(raw) {
+    return raw.replace(/\s+/g, " ").trim();
+  }
+
+  // ── Core: speak narration for a given slide index ────────
+  // Stops any current speech, then starts the new utterance.
+  function speakNarration(slideIdx) {
+    if (!speechSupported) return;
+
+    const data = getNarrationData(slideIdx);
+    if (!data) return;
+
+    const text = cleanNarrationText(data.narration);
+    if (!text) return;
+
+    // Cancel previous speech and reset state
+    window.speechSynthesis.cancel();
+    voiceIsSpeaking  = false;
+    voiceIsPaused    = false;
+    voiceActiveSlide = slideIdx;
+
+    // Build utterance
+    voiceUtterance = new SpeechSynthesisUtterance(text);
+    voiceUtterance.rate   = 1.0;   // natural speed
+    voiceUtterance.pitch  = 1.0;
+    voiceUtterance.volume = 1.0;
+
+    // ── Event: speech started ───────────────────────────────
+    voiceUtterance.onstart = () => {
+      voiceIsSpeaking = true;
+      voiceIsPaused   = false;
+      setSpeakerBtnState(slideIdx, "playing");
+      updateSubtitle("🔊 " + (data.title || "") + " — " + text.substring(0, 80) + "…");
+    };
+
+    // ── Event: speech ended or cancelled ───────────────────
+    voiceUtterance.onend = () => {
+      voiceIsSpeaking  = false;
+      voiceIsPaused    = false;
+      voiceActiveSlide = -1;
+      setSpeakerBtnState(slideIdx, "idle");
+      updateSubtitle("✅ Narration complete. Click 🔊 to replay.");
+    };
+
+    voiceUtterance.onerror = (e) => {
+      // Ignore 'interrupted' – it fires when cancelled intentionally
+      if (e.error === "interrupted" || e.error === "canceled") return;
+      voiceIsSpeaking  = false;
+      voiceIsPaused    = false;
+      setSpeakerBtnState(slideIdx, "idle");
+      updateSubtitle("⚠️ Voice narration encountered an error.");
+    };
+
+    // ── Live subtitle sync via word boundary events ──────────
+    // Not all browsers fire `boundary`, so we fall back gracefully.
+    voiceUtterance.onboundary = (e) => {
+      if (e.name === "word" && e.charIndex !== undefined) {
+        // Show a rolling window of the text currently being spoken
+        const snippet = text.substring(e.charIndex, e.charIndex + 120).trimEnd();
+        updateSubtitle("🔊 " + snippet + "…");
+      }
+    };
+
+    // Some browsers (Chrome) need a tiny delay after cancel() before speak()
+    setTimeout(() => {
+      window.speechSynthesis.speak(voiceUtterance);
+    }, 80);
+  }
+
+  // ── Pause ongoing narration ──────────────────────────────
+  function pauseNarration() {
+    if (!speechSupported || !voiceIsSpeaking || voiceIsPaused) return;
+    window.speechSynthesis.pause();
+    voiceIsPaused = true;
+    setSpeakerBtnState(voiceActiveSlide, "paused");
+    updateSubtitle("⏸ Narration paused. Click 🔊 to resume.");
+  }
+
+  // ── Resume paused narration ──────────────────────────────
+  function resumeNarration() {
+    if (!speechSupported || !voiceIsPaused) return;
+    window.speechSynthesis.resume();
+    voiceIsPaused = false;
+    setSpeakerBtnState(voiceActiveSlide, "playing");
+    updateSubtitle("🔊 Narration resumed…");
+  }
+
+  // ── Stop narration completely ────────────────────────────
+  // Safe to call even when nothing is speaking.
+  function stopNarration() {
+    if (!speechSupported) return;
+    window.speechSynthesis.cancel();
+    voiceIsSpeaking  = false;
+    voiceIsPaused    = false;
+    if (voiceActiveSlide >= 0) setSpeakerBtnState(voiceActiveSlide, "idle");
+    voiceActiveSlide = -1;
+    voiceUtterance   = null;
+    updateSubtitle("Click the 🔊 speaker icon to hear the guide for this step.");
+  }
+
+  // ── Speaker button click handler (toggle play/pause/stop) ─
+  function handleSpeakerButtonClick(slideIdx) {
+    if (!speechSupported) {
+      updateSubtitle("Voice narration not supported in this browser.");
+      return;
+    }
+
+    if (voiceActiveSlide === slideIdx && voiceIsSpeaking && !voiceIsPaused) {
+      // Currently playing this slide → pause
+      pauseNarration();
+    } else if (voiceActiveSlide === slideIdx && voiceIsPaused) {
+      // Paused on this slide → resume
+      resumeNarration();
+    } else {
+      // Different slide or stopped → start fresh
+      speakNarration(slideIdx);
+    }
+  }
+
+  // ── Try autoplay narration for current slide ─────────────
+  // Browsers block autoplay audio without a prior user gesture.
+  // We attempt it and silently fall back to showing a prompt.
+  function tryAutoplayNarration() {
+    if (!speechSupported || !voiceAutoplay) return;
+    try {
+      speakNarration(currentSlide);
+    } catch (_) {
+      updateSubtitle("Click the 🔊 speaker icon to hear the guide for this step.");
+    }
+  }
+
+  // ── Update subtitle bar text with fade animation ─────────
+  function updateSubtitle(text) {
+    if (!voiceSubtitleEl) return;
+    voiceSubtitleEl.classList.remove("narration-subtitle--visible");
+    // Small timeout allows CSS transition to re-trigger
+    setTimeout(() => {
+      voiceSubtitleEl.textContent = text;
+      voiceSubtitleEl.classList.add("narration-subtitle--visible");
+    }, 60);
+  }
+
+  // ── Reset all speaker button visuals to idle state ────────
+  function resetAllSpeakerBtns() {
+    document.querySelectorAll(".slide-speaker-btn").forEach((btn) => {
+      btn.classList.remove("is-playing", "is-paused");
+      btn.setAttribute("aria-label", btn.getAttribute("aria-label").replace(/ \(.*\)$/, ""));
+    });
+  }
+
+  // ── Set one speaker button's visual state ─────────────────
+  // state: 'idle' | 'playing' | 'paused'
+  function setSpeakerBtnState(slideIdx, state) {
+    const btn = document.getElementById(`slide-speaker-${slideIdx}`);
+    if (!btn) return;
+    btn.classList.remove("is-playing", "is-paused");
+    if (state === "playing") btn.classList.add("is-playing");
+    if (state === "paused")  btn.classList.add("is-paused");
+  }
 
   /* ══════════════════════════════════════════════════════════
      READ ALOUD ACCESSIBILITY MODULE

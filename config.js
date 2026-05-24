@@ -552,3 +552,98 @@ const TAX_SECTIONS = [
     beginnerExplanation: "80GG lets you deduct rent paid if your employer does not give HRA. This is especially useful for new joiners who have relocated and are paying rent without any rent allowance from their salary."
   }
 ];
+
+// ── ONBOARDING VOICE NARRATION CONTENT ───────────────────────
+// Each step matches a TUTORIAL_SLIDES entry (1-indexed).
+// Narration text is read aloud via the SpeechSynthesis API.
+// NO external audio files or APIs are used.
+const onboardingVoiceContent = {
+  step1: {
+    title: "Personal Information",
+    narration: `
+      Welcome to Personal Information.
+      Enter your basic details like name, date of birth,
+      gender, PAN, Aadhaar, qualification, and phone number.
+      After completing the form, click Save and Continue.
+    `
+  },
+
+  step2: {
+    title: "Contact Details",
+    narration: `
+      Welcome to Contact Details.
+      Enter your emergency contact and nominee information carefully.
+      These details are important for employee records and communication.
+    `
+  },
+
+  step3: {
+    title: "Address Information",
+    narration: `
+      Welcome to Address Information.
+      Enter your current and permanent address details including city,
+      state, postal code, and mobile number.
+      Click Save and Continue after verification.
+    `
+  },
+
+  step4: {
+    title: "Bank Details",
+    narration: `
+      Welcome to Bank Details.
+      Enter your account holder name, account number,
+      bank name, branch name, and IFSC code carefully.
+      These details are used for salary processing.
+    `
+  },
+
+  step5: {
+    title: "Provident Fund",
+    narration: `
+      Welcome to Provident Fund details.
+      Enter your UAN number, PF account number,
+      employee name, and father's name carefully.
+      Make sure all details match official records.
+    `
+  },
+
+  step6: {
+    title: "Education",
+    narration: `
+      Welcome to Education Details.
+      Enter your degree, college name,
+      specialization, grade, and course dates.
+      You can also add additional qualifications.
+    `
+  },
+
+  step7: {
+    title: "Experience",
+    narration: `
+      Welcome to Experience Details.
+      Enter your company details, job role,
+      salary, HR contact information, and reason for leaving.
+      Add additional experience if needed.
+    `
+  },
+
+  step8: {
+    title: "Documents",
+    narration: `
+      Welcome to Documents Upload.
+      Upload Aadhaar, PAN card, educational certificates,
+      bank documents, photographs, and experience documents carefully.
+    `
+  },
+
+  step9: {
+    title: "Declaration",
+    narration: `
+      Welcome to the final Declaration section.
+      Review all entered information carefully,
+      accept the terms and conditions,
+      provide your digital signature,
+      and click Complete Onboarding.
+    `
+  }
+};

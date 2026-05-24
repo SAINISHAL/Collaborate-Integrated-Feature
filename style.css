@@ -953,24 +953,61 @@ svg {
   margin-bottom: 32px;
 }
 
+.search-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  margin-bottom: 10px;
+}
+
 .search-input-wrap {
   position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* SVG icon – absolutely inside the right edge of the input */
+.search-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  pointer-events: none;
+  transition: color 0.25s ease;
+  z-index: 1;
+}
+
+/* Brighten icon when input is focused */
+#tax-search:focus + .search-icon {
+  color: var(--c-primary);
 }
 
 #tax-search {
   width: 100%;
-  padding: 14px 44px 14px 18px;
+  padding: 12px 44px 12px 16px;
   border-radius: var(--r-md);
-  border: 1px solid var(--c-navy-muted);
+  border: 1.5px solid var(--c-navy-muted);
   background: var(--c-navy-light);
   color: #fff;
-  font-size: .9rem;
+  font-size: 0.88rem;
   transition: var(--trans);
+}
+
+#tax-search::placeholder {
+  color: #6b7280;
 }
 
 #tax-search:focus {
   border-color: var(--c-primary);
   background: var(--c-navy-muted);
+  outline: none;
 }
 
 .section-list {
@@ -1799,5 +1836,192 @@ svg {
 
   .chatbot-overlay:not([hidden]) .chatbot-panel {
     transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VOICE NARRATION UI
+   Speaker button · Subtitle bar · Pulse animation
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Speaker button ─────────────────────────────────────────── */
+/* Positioned absolutely in the top-right corner of each .slide  */
+.slide-speaker-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+
+  /* Circular shape */
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+
+  /* Purple gradient matching existing UI themes */
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 60%, #c084fc 100%);
+  color: #fff;
+  box-shadow:
+    0 4px 14px rgba(124, 58, 237, 0.45),
+    0 1px 3px rgba(0, 0, 0, 0.25);
+
+  /* Smooth transitions */
+  transition:
+    transform 0.25s cubic-bezier(.4,0,.2,1),
+    box-shadow 0.25s cubic-bezier(.4,0,.2,1),
+    background 0.25s ease,
+    opacity 0.2s ease;
+
+  /* Slightly transparent at rest so it doesn't obscure the image */
+  opacity: 0.88;
+}
+
+/* Show fully on hover / focus */
+.slide-speaker-btn:hover,
+.slide-speaker-btn:focus-visible {
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow:
+    0 6px 20px rgba(124, 58, 237, 0.65),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+/* Focus ring for keyboard navigation */
+.slide-speaker-btn:focus-visible {
+  outline: 3px solid #c084fc;
+  outline-offset: 3px;
+}
+
+/* ── Playing state: add pulsing animation ───────────────────── */
+.slide-speaker-btn.is-playing {
+  opacity: 1;
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 60%, #a855f7 100%);
+  animation: speakerPulse 1.6s ease-in-out infinite;
+  box-shadow:
+    0 0 0 0 rgba(124, 58, 237, 0.55),
+    0 4px 16px rgba(124, 58, 237, 0.5);
+}
+
+/* Pulse keyframe – rings emanate outward like sonar */
+@keyframes speakerPulse {
+  0% {
+    box-shadow:
+      0 0 0 0   rgba(124, 58, 237, 0.6),
+      0 4px 16px rgba(124, 58, 237, 0.45);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 12px rgba(124, 58, 237, 0),
+      0 4px 16px rgba(124, 58, 237, 0.45);
+    transform: scale(1.06);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0   rgba(124, 58, 237, 0),
+      0 4px 16px rgba(124, 58, 237, 0.45);
+    transform: scale(1);
+  }
+}
+
+/* ── Paused state: amber tint so user knows it is paused ─────── */
+.slide-speaker-btn.is-paused {
+  opacity: 1;
+  background: linear-gradient(135deg, #b45309 0%, #d97706 60%, #fbbf24 100%);
+  animation: none;
+  box-shadow:
+    0 4px 14px rgba(180, 83, 9, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Narration subtitle / caption bar ──────────────────────── */
+/* Inserted by JS directly after .slider-container              */
+.narration-subtitle {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  margin-top: 14px;
+  border-radius: 12px;
+
+  /* Glassmorphism-style background */
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.08) 0%,
+    rgba(168, 85, 247, 0.05) 100%
+  );
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.06);
+
+  /* Typography */
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #5b21b6;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+
+  /* Fade-in transition (class toggled by JS) */
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity  0.3s cubic-bezier(.4,0,.2,1),
+    transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* JS adds this class to trigger the fade-in */
+.narration-subtitle--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Unsupported browser notice ─────────────────────────────── */
+/* Injected by initVoiceNarration() when SpeechSynthesis is absent */
+.narration-unsupported {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.narration-unsupported::before {
+  content: "⚠️";
+  flex-shrink: 0;
+}
+
+/* ── Responsive: mobile adjustments ─────────────────────────── */
+@media (max-width: 600px) {
+  /* Slightly smaller button on narrow screens */
+  .slide-speaker-btn {
+    width: 38px;
+    height: 38px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .slide-speaker-btn svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Caption bar: smaller text, less padding */
+  .narration-subtitle {
+    font-size: 0.8rem;
+    padding: 8px 14px;
+    min-height: 38px;
   }
 }
